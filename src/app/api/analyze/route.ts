@@ -23,34 +23,35 @@ export async function POST(request: NextRequest) {
         // Gemini 모델 초기화
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-        const prompt = `이 행사장/전시장 도면을 분석해주세요.
-
-분석 항목:
-1. 부스 개수 (P1, P2, S1, S2 등 번호가 붙은 부스들)
-2. 통로 및 빈 공간 비율 (0~1 사이 값)
-3. 출입구 개수
-4. 존(Zone) 구분
-5. 특이사항 (무대, 라운지 등)
-6. 도면에 표시된 치수나 스케일을 참고하여 행사장 총 면적(㎡)을 추정해주세요.
-   - 도면에 치수가 있으면 그것을 기준으로 계산
-   - 치수가 없으면 일반적인 부스 크기(3m x 3m = 9㎡)를 기준으로 추정
-   - 전체 공간의 가로 x 세로 크기를 추정하여 계산
-
-다음 JSON 형식으로만 응답해주세요:
-{
-  "boothCount": 숫자,
-  "emptySpaceRatio": 0~1 사이 소수,
-  "entranceCount": 숫자,
-  "zones": ["Zone 1", "Zone 2"],
-  "features": ["Conference Stage", "Open Lounge"],
-  "analysis": "간단한 분석 설명",
-  "estimatedDimensions": {
-    "width": 가로 길이(m),
-    "height": 세로 길이(m)
-  },
-  "estimatedTotalArea": 추정 총 면적(㎡),
-  "areaCalculationMethod": "면적 계산 방법 설명 (예: 도면 치수 기준, 부스 크기 기준 추정 등)"
-}`;
+        const prompt = `
+            이 행사장/전시장 도면을 분석해주세요.
+            분석 항목:
+            1. 부스 개수 (P1, P2, S1, S2 등 번호가 붙은 부스들)
+            2. 통로 및 빈 공간 비율 (0~1 사이 값)
+            3. 출입구 개수
+            4. 존(Zone) 구분
+            5. 특이사항 (무대, 라운지 등)
+            6. 도면에 표시된 치수나 스케일을 참고하여 행사장 총 면적(㎡)을 추정해주세요.
+               - 도면에 치수가 있으면 그것을 기준으로 계산
+               - 치수가 없으면 일반적인 부스 크기(3m x 3m = 9㎡)를 기준으로 추정
+               - 전체 공간의 가로 x 세로 크기를 추정하여 계산
+            
+            다음 JSON 형식으로만 응답해주세요:
+            {
+              "boothCount": 숫자,
+              "emptySpaceRatio": 0~1 사이 소수,
+              "entranceCount": 숫자,
+              "zones": ["Zone 1", "Zone 2"],
+              "features": ["Conference Stage", "Open Lounge"],
+              "analysis": "간단한 분석 설명",
+              "estimatedDimensions": {
+                "width": 가로 길이(m),
+                "height": 세로 길이(m)
+              },
+              "estimatedTotalArea": 추정 총 면적(㎡),
+              "areaCalculationMethod": "면적 계산 방법 설명 (예: 도면 치수 기준, 부스 크기 기준 추정 등)"
+            }
+        `;
 
         // Gemini Vision API 호출
         const result = await model.generateContent([

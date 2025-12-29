@@ -1,4 +1,4 @@
-# VenueFit - 행사장 수용인원 자동계산
+# 4J - 행사장 수용인원 자동계산
 
 AI 기반 행사장 수용인원 자동 계산 서비스
 
@@ -12,35 +12,31 @@ AI 기반 행사장 수용인원 자동 계산 서비스
 ## 설치
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## 환경변수 설정
 
-```bash
-cp .env.example .env.local
+`.env.local` 파일에 Google AI API 키 입력:
 ```
-
-`.env.local` 파일에 OpenAI API 키 입력:
-```
-OPENAI_API_KEY=your_api_key
+GOOGLE_AI_API_KEY=your_api_key
 ```
 
 ## 실행
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 http://localhost:3000 접속
 
 ## 기술 스택
 
-- Next.js 15
+- Next.js 16
 - React 19
 - TypeScript
 - Tailwind CSS 4
-- OpenAI GPT-4o Vision API
+- Google Gemini AI
 
 ## 계산 공식
 
@@ -68,12 +64,17 @@ src/
 │   ├── layout.tsx
 │   └── globals.css
 ├── components/
-│   ├── Button.tsx
-│   ├── Input.tsx
-│   ├── Select.tsx
-│   ├── Header.tsx
-│   ├── FileUpload.tsx
-│   └── CongestionLevel.tsx
+│   ├── common/
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Select.tsx
+│   │   ├── FileUpload.tsx
+│   │   ├── CongestionLevel.tsx
+│   │   ├── Skeleton.tsx
+│   │   └── index.ts
+│   └── layout/
+│       ├── Header.tsx
+│       └── index.ts
 └── types/
     └── index.ts
 ```
