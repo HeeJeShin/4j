@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VenueFit - 행사장 수용인원 자동계산
 
-## Getting Started
+AI 기반 행사장 수용인원 자동 계산 서비스
 
-First, run the development server:
+## 기능
+
+- 행사장 유형별 수용인원 계산 (스탠딩/연회형/극장형)
+- 도면 이미지 AI 분석 (부스 개수, 출입구, 면적 추정)
+- 혼잡도 레벨별 인원 예측 (1~5 레벨)
+- 비상구 처리량 고려한 안전 인원 산출
+
+## 설치
+
+```bash
+npm install
+```
+
+## 환경변수 설정
+
+```bash
+cp .env.example .env.local
+```
+
+`.env.local` 파일에 OpenAI API 키 입력:
+```
+OPENAI_API_KEY=your_api_key
+```
+
+## 실행
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 접속
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 기술 스택
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- OpenAI GPT-4o Vision API
 
-## Learn More
+## 계산 공식
 
-To learn more about Next.js, take a look at the following resources:
+### 행사장 유형별 1인당 면적
+- 스탠딩: 0.5㎡
+- 연회형: 1.3~1.9㎡
+- 극장형: 0.65~1.0㎡
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 혼잡도 레벨
+1. 안전 (30% 밀도)
+2. 여유 (50% 밀도) - 권장
+3. 혼잡 (70% 밀도) - 최대
+4. 위험 (90% 밀도)
+5. 매우 위험 (110% 밀도)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 폴더 구조
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── analyze/route.ts  # AI 도면 분석
+│   │   └── calculate/route.ts # 수용인원 계산
+│   ├── page.tsx
+│   ├── layout.tsx
+│   └── globals.css
+├── components/
+│   ├── Button.tsx
+│   ├── Input.tsx
+│   ├── Select.tsx
+│   ├── Header.tsx
+│   ├── FileUpload.tsx
+│   └── CongestionLevel.tsx
+└── types/
+    └── index.ts
+```
