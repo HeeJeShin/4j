@@ -31,8 +31,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
                 {...props}
             >
-        {children}
-      </button>
+                {children}
+            </button>
         );
     }
 );
