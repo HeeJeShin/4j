@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/layout";
 import { Button, ProgressStepper } from "@/components/common";
 import { Step1EventInfo, Step2Analysis, Step3Results } from "@/components/steps";
@@ -22,37 +22,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-
-  // 로컬스토리지에서 데이터 불러오기
-  useEffect(() => {
-    const savedData = localStorage.getItem('venueCalculatorData');
-    if (savedData) {
-      try {
-        const data = JSON.parse(savedData);
-        if (data.eventName) setEventName(data.eventName);
-        if (data.totalArea) setTotalArea(data.totalArea);
-        if (data.venueType) setVenueType(data.venueType);
-        if (data.floorPlanPreview) setFloorPlanPreview(data.floorPlanPreview);
-        if (data.analysisResult) setAnalysisResult(data.analysisResult);
-        if (data.result) setResult(data.result);
-      } catch (e) {
-        console.error('로컬스토리지 데이터 로드 실패:', e);
-      }
-    }
-  }, []);
-
-  // 데이터 변경 시 로컬스토리지에 저장
-  useEffect(() => {
-    const dataToSave = {
-      eventName,
-      totalArea,
-      venueType,
-      floorPlanPreview,
-      analysisResult,
-      result,
-    };
-    localStorage.setItem('venueCalculatorData', JSON.stringify(dataToSave));
-  }, [eventName, totalArea, venueType, floorPlanPreview, analysisResult, result]);
 
   const handleCalculate = async () => {
     if (!totalArea) {
@@ -94,7 +63,6 @@ export default function Home() {
     setResult(null);
     setAnalysisResult(null);
     setCurrentStep(1);
-    localStorage.removeItem('venueCalculatorData');
   };
 
   const handleNext = () => {
