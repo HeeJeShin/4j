@@ -16,6 +16,7 @@ const venueOptions = [
   { value: "standing", label: "스탠딩" },
   { value: "banquet", label: "연회형" },
   { value: "theater", label: "극장형" },
+  { value: "classroom", label: "교실형" },
 ];
 
 export default function Step1EventInfo({
@@ -68,6 +69,7 @@ export default function Step1EventInfo({
           <p>• 스탠딩: 1인당 0.5㎡ (콘서트, 페스티벌, 전시 오프닝)</p>
           <p>• 연회형: 1인당 1.3~1.9㎡ (테이블 배치 행사)</p>
           <p>• 극장형: 1인당 0.65~1.0㎡ (좌석 배치 행사)</p>
+          <p>• 교실형: 1인당 2.0㎡ (세미나, 교육)</p>
         </div>
         <p className="mt-4 text-xs text-zinc-500">
           * 계산된 인원은 혼잡도, 비상구 처리량, 동선을 고려하여 AI 보정이 적용됩니다.

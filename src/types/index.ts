@@ -1,4 +1,4 @@
-export type VenueType = "standing" | "banquet" | "theater";
+export type VenueType = "standing" | "banquet" | "theater" | "classroom";
 
 export interface EventInfo {
     eventName: string;

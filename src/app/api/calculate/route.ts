@@ -5,6 +5,7 @@ const SPACE_PER_PERSON = {
     standing: 0.5,    // 스탠딩
     banquet: 1.5,     // 연회형 (1.3~1.9 평균)
     theater: 0.8,     // 극장형 (0.65~1.0 평균)
+    classroom: 2.0,   // 교실형
 };
 
 // 기준 밀도 (명/㎡)
@@ -12,11 +13,12 @@ const STANDARD_DENSITY = {
     standing: 2.0,
     banquet: 0.7,
     theater: 1.2,
+    classroom: 0.5,
 };
 
 interface CalculationInput {
     totalArea: number;
-    venueType: "standing" | "banquet" | "theater";
+    venueType: "standing" | "banquet" | "theater" | "classroom";
     entranceCount?: number;
     aisleWidth?: number;
 }
