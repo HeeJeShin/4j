@@ -22,6 +22,7 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [notFloorPlanError, setNotFloorPlanError] = useState<string | null>(null);
 
   const handleFileSelect = (file: File) => {
     setFloorPlan(file);
@@ -36,6 +37,7 @@ export default function Home() {
     if (!floorPlan) return;
 
     setIsAnalyzing(true);
+    setNotFloorPlanError(null);
     try {
       const formData = new FormData();
       formData.append("image", floorPlan);
@@ -46,10 +48,17 @@ export default function Home() {
         body: formData,
       });
 
+      const data = await response.json();
+
+      // 도면이 아닌 이미지인 경우
+      if (data.error === "NOT_FLOOR_PLAN") {
+        setNotFloorPlanError(data.detectedContent || "알 수 없는 이미지");
+        return;
+      }
+
       if (!response.ok) throw new Error("분석 실패");
 
-      const data: AnalysisResult = await response.json();
-      setAnalysisResult(data);
+      setAnalysisResult(data as AnalysisResult);
 
       // 분석된 면적으로 자동 입력
       if (data.estimatedTotalArea) {
@@ -101,6 +110,7 @@ export default function Home() {
     setFloorPlanPreview(null);
     setResult(null);
     setAnalysisResult(null);
+    setNotFloorPlanError(null);
   };
 
   return (
@@ -157,6 +167,7 @@ export default function Home() {
                           setFloorPlan(null);
                           setFloorPlanPreview(null);
                           setAnalysisResult(null);
+                          setNotFloorPlanError(null);
                         }}
                         className="text-zinc-400 hover:text-zinc-600"
                     >
@@ -187,8 +198,24 @@ export default function Home() {
                     {/* 분석 중 스켈레톤 */}
                     {isAnalyzing && <AnalysisSkeleton />}
 
+                    {/* 도면이 아닌 이미지 에러 */}
+                    {!isAnalyzing && notFloorPlanError && (
+                        <div className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-4 text-center">
+                          <p className="text-3xl mb-2">🤔</p>
+                          <p className="font-medium text-amber-800 mb-1">
+                            어라? 이건 도면이 아닌 것 같아요!
+                          </p>
+                          <p className="text-sm text-amber-600">
+                            AI가 보기엔 <span className="font-semibold">&quot;{notFloorPlanError}&quot;</span> 같은데...
+                          </p>
+                          <p className="text-xs text-amber-500 mt-2">
+                            행사장 도면을 올려주시면 멋지게 분석해드릴게요 ✨
+                          </p>
+                        </div>
+                    )}
+
                     {/* 분석 결과 */}
-                    {!isAnalyzing && analysisResult && (
+                    {!isAnalyzing && !notFloorPlanError && analysisResult && (
                         <div className="mt-4 rounded bg-zinc-50 p-4 text-sm">
                       <p className="font-medium text-zinc-900 mb-2">AI 분석 결과</p>
                       <div className="space-y-1 text-zinc-600">

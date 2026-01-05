@@ -12,6 +12,10 @@ AI 기반 행사장 수용인원 자동 계산 서비스
 ## 설치
 
 ```bash
+# pnpm 설치 (없는 경우)
+npm install -g pnpm
+
+# 의존성 설치
 pnpm install
 ```
 

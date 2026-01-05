@@ -24,8 +24,15 @@ export async function POST(request: NextRequest) {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
-            이 행사장/전시장 도면을 분석해주세요.
-            분석 항목:
+            먼저 이 이미지가 행사장/전시장 도면인지 판단해주세요.
+
+            도면이 아닌 경우 (사람 사진, 풍경, 음식, 동물, 일반 사진 등):
+            {
+              "isFloorPlan": false,
+              "detectedContent": "감지된 이미지 내용 (예: 고양이, 음식 사진, 풍경 등)"
+            }
+
+            도면인 경우, 다음을 분석해주세요:
             1. 부스 개수 (P1, P2, S1, S2 등 번호가 붙은 부스들)
             2. 통로 및 빈 공간 비율 (0~1 사이 값)
             3. 출입구 개수
@@ -35,9 +42,10 @@ export async function POST(request: NextRequest) {
                - 도면에 치수가 있으면 그것을 기준으로 계산
                - 치수가 없으면 일반적인 부스 크기(3m x 3m = 9㎡)를 기준으로 추정
                - 전체 공간의 가로 x 세로 크기를 추정하여 계산
-            
+
             다음 JSON 형식으로만 응답해주세요:
             {
+              "isFloorPlan": true,
               "boothCount": 숫자,
               "emptySpaceRatio": 0~1 사이 소수,
               "entranceCount": 숫자,
@@ -70,6 +78,17 @@ export async function POST(request: NextRequest) {
         // JSON 파싱
         const jsonStr = text.replace(/```json\n?|\n?```/g, "").trim();
         const analysisResult = JSON.parse(jsonStr);
+
+        // 도면이 아닌 경우 에러 반환
+        if (analysisResult.isFloorPlan === false) {
+            return NextResponse.json(
+                {
+                    error: "NOT_FLOOR_PLAN",
+                    detectedContent: analysisResult.detectedContent,
+                },
+                { status: 400 }
+            );
+        }
 
         // AI가 면적을 추정하지 못한 경우 부스 기반으로 계산
         let totalArea = analysisResult.estimatedTotalArea;
