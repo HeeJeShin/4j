@@ -1,42 +1,104 @@
-import { ButtonHTMLAttributes, forwardRef } from "react";
+"use client";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+import { Button as MuiButton } from "@mui/material";
+
+interface ButtonProps {
     variant?: "primary" | "secondary" | "outline";
     size?: "sm" | "md" | "lg";
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    type?: "button" | "submit" | "reset";
+    className?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className = "", variant = "primary", size = "md", children, ...props }, ref) => {
-        const baseStyles =
-            "inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+export default function Button({
+    variant = "primary",
+    size = "md",
+    children,
+    onClick,
+    disabled,
+    type = "button",
+    className
+}: ButtonProps) {
+    const variantStyles = {
+        primary: {
+            bgcolor: '#10b981',
+            color: '#ffffff',
+            '&:hover': {
+                bgcolor: '#059669',
+            },
+            '&:active': {
+                bgcolor: '#047857',
+            },
+        },
+        secondary: {
+            bgcolor: '#a1a1aa',
+            color: '#ffffff',
+            '&:hover': {
+                bgcolor: '#71717a',
+            },
+            '&:active': {
+                bgcolor: '#52525b',
+            },
+        },
+        outline: {
+            bgcolor: '#ffffff',
+            color: '#3f3f46',
+            border: '1px solid #d4d4d8',
+            '&:hover': {
+                bgcolor: '#fafafa',
+                borderColor: '#a1a1aa',
+            },
+            '&:active': {
+                bgcolor: '#f4f4f5',
+            },
+        },
+    };
 
-        const variants = {
-            // 계산하기, 저장하기 버튼 (초록색)
-            primary: "bg-emerald-500 text-white hover:bg-emerald-600 focus:ring-emerald-500",
-            // 초기화, 다시 계산하기 버튼 (회색)
-            secondary: "bg-zinc-400 text-white hover:bg-zinc-500 focus:ring-zinc-400",
-            // 파일 첨부 버튼 (테두리)
-            outline: "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 focus:ring-zinc-500",
-        };
+    const sizeStyles = {
+        sm: {
+            height: '32px',
+            px: 2,
+            fontSize: '0.875rem',
+        },
+        md: {
+            height: '40px',
+            px: 3,
+            fontSize: '0.875rem',
+        },
+        lg: {
+            height: '48px',
+            px: 4,
+            fontSize: '1rem',
+        },
+    };
 
-        const sizes = {
-            sm: "h-8 px-3 text-sm rounded",
-            md: "h-10 px-6 text-sm rounded",
-            lg: "h-12 px-8 text-base rounded",
-        };
-
-        return (
-            <button
-                ref={ref}
-                className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-                {...props}
-            >
-                {children}
-            </button>
-        );
-    }
-);
-
-Button.displayName = "Button";
-
-export default Button;
+    return (
+        <MuiButton
+            type={type}
+            onClick={onClick}
+            disabled={disabled}
+            className={className}
+            sx={{
+                ...variantStyles[variant],
+                ...sizeStyles[size],
+                textTransform: 'none',
+                fontWeight: 500,
+                borderRadius: '6px',
+                boxShadow: 'none',
+                '&:hover': {
+                    ...variantStyles[variant]['&:hover'],
+                    boxShadow: 'none',
+                },
+                '&.Mui-disabled': {
+                    opacity: 0.5,
+                    bgcolor: variantStyles[variant].bgcolor,
+                    color: variantStyles[variant].color,
+                },
+            }}
+        >
+            {children}
+        </MuiButton>
+    );
+}

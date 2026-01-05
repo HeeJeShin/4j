@@ -1,36 +1,61 @@
-import { InputHTMLAttributes, forwardRef } from "react";
+"use client";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+import { TextField } from "@mui/material";
+
+interface InputProps {
     label?: string;
     error?: string;
+    id?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    type?: string;
+    disabled?: boolean;
+    className?: string;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-    ({ className = "", label, error, id, ...props }, ref) => {
-        return (
-            <div className="flex items-center gap-4">
-                {label && (
-                    <label
-                        htmlFor={id}
-                        className="text-sm font-medium text-zinc-900 whitespace-nowrap"
-                    >
+export default function Input({ label, error, id, value, onChange, placeholder, type = "text", disabled, className }: InputProps) {
+    return (
+        <div className={`flex items-center gap-4 ${className || ""}`}>
+            {label && (
+                <label className="text-sm font-medium text-zinc-900 whitespace-nowrap min-w-fit">
                     {label}
-                  </label>
-                )}
-                <input
-                    ref={ref}
-                    id={id}
-                    className={`flex-1 border-b border-zinc-300 px-2 py-2 text-sm text-zinc-900 bg-transparent placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none disabled:bg-zinc-100 disabled:cursor-not-allowed ${
-                        error ? "border-red-500 focus:border-red-500" : ""
-                    } ${className}`}
-                    {...props}
-                />
-                {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-            </div>
-        );
-    }
-);
-
-Input.displayName = "Input";
-
-export default Input;
+                </label>
+            )}
+            <TextField
+                id={id}
+                type={type}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                disabled={disabled}
+                error={!!error}
+                helperText={error}
+                fullWidth
+                size="small"
+                sx={{
+                    '& .MuiOutlinedInput-root': {
+                        fontSize: '0.875rem',
+                        '& fieldset': {
+                            borderColor: '#d4d4d8',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: '#a1a1aa',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: '#18181b',
+                            borderWidth: '2px',
+                        },
+                    },
+                    '& .MuiInputBase-input': {
+                        color: '#18181b',
+                    },
+                    '& .MuiInputBase-input::placeholder': {
+                        color: '#a1a1aa',
+                        opacity: 1,
+                    },
+                }}
+            />
+        </div>
+    );
+}

@@ -1,48 +1,58 @@
-import { SelectHTMLAttributes, forwardRef } from "react";
+"use client";
+
+import { FormControl, InputLabel, Select as MuiSelect, MenuItem, FormHelperText } from "@mui/material";
 
 interface SelectOption {
     value: string;
     label: string;
 }
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps {
     label?: string;
     options: SelectOption[];
     error?: string;
+    id?: string;
+    value?: string;
+    onChange?: (e: any) => void;
+    disabled?: boolean;
+    className?: string;
 }
 
-const Select = forwardRef<HTMLSelectElement, SelectProps>(
-    ({ className = "", label, options, error, id, ...props }, ref) => {
-        return (
-            <div className="flex items-center gap-4">
-                {label && (
-                    <label
-                        htmlFor={id}
-                        className="text-sm font-medium text-zinc-900 whitespace-nowrap"
-                    >
-                        {label}
-                    </label>
-                )}
-                <select
-                    ref={ref}
+export default function Select({ label, options, error, id, value, onChange, disabled, className }: SelectProps) {
+    return (
+        <div className={`flex items-center gap-4 ${className || ""}`}>
+            {label && (
+                <label className="text-sm font-medium text-zinc-900 whitespace-nowrap min-w-fit">
+                    {label}
+                </label>
+            )}
+            <FormControl fullWidth size="small" error={!!error} disabled={disabled}>
+                <MuiSelect
                     id={id}
-                    className={`flex-1 border-b border-zinc-300 bg-transparent px-2 py-2 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none disabled:bg-zinc-100 disabled:cursor-not-allowed ${
-                        error ? "border-red-500 focus:border-red-500" : ""
-                    } ${className}`}
-                    {...props}
+                    value={value}
+                    onChange={onChange}
+                    sx={{
+                        fontSize: '0.875rem',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#d4d4d8',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#a1a1aa',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#18181b',
+                            borderWidth: '2px',
+                        },
+                    }}
                 >
                     {options.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <MenuItem key={option.value} value={option.value}>
                             {option.label}
-                        </option>
+                        </MenuItem>
                     ))}
-                </select>
-                {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-            </div>
-        );
-    }
-);
-
-Select.displayName = "Select";
-
-export default Select;
+                </MuiSelect>
+                {error && <FormHelperText>{error}</FormHelperText>}
+            </FormControl>
+        </div>
+    );
+}
