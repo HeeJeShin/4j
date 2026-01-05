@@ -62,16 +62,16 @@ export async function POST(request: NextRequest) {
         const requiredAisleWidth = theoreticalMax / 82;
         const bottleneckRisk = requiredAisleWidth > aisleWidth;
 
-        // 5. 권장/최대 인원 산출
-        // 권장: Level 2 (여유) 기준
-        // 최대: Level 3 (혼잡) 기준, 비상구 처리량 고려
-        const recommended = Math.min(capacities.level2, exitCapacity);
-        const maximum = Math.min(capacities.level3, exitCapacity);
-
-        // 6. AI 보정 적용 (10~30% 감소)
+        // 5. AI 보정 적용 (10~30% 감소)
         const aiCorrectionFactor = 0.85; // 15% 감소
-        const correctedRecommended = Math.floor(recommended * aiCorrectionFactor);
-        const correctedMaximum = Math.floor(maximum * aiCorrectionFactor);
+
+        // 6. 권장/최대 인원 산출
+        // 권장: Level 2 (여유) 기준, 비상구 처리량 고려
+        // 최대: Level 3 (혼잡) 기준 (혼잡도 레벨과 일치)
+        const correctedLevel2 = Math.floor(capacities.level2 * aiCorrectionFactor);
+        const correctedLevel3 = Math.floor(capacities.level3 * aiCorrectionFactor);
+        const correctedRecommended = Math.min(correctedLevel2, exitCapacity);
+        const correctedMaximum = correctedLevel3;
 
         return NextResponse.json({
             input: {
