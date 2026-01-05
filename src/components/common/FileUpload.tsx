@@ -19,6 +19,12 @@ export default function FileUpload({ label, onFileSelect, accept }: FileUploadPr
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // 이미지 파일인지 검증
+            if (!file.type.startsWith('image/')) {
+                alert('이미지 파일만 업로드할 수 있습니다.');
+                e.target.value = ''; // input 초기화
+                return;
+            }
             onFileSelect(file);
         }
     };
@@ -33,7 +39,7 @@ export default function FileUpload({ label, onFileSelect, accept }: FileUploadPr
             <input
                 ref={inputRef}
                 type="file"
-                accept={accept}
+                accept={accept || "image/*"}
                 onChange={handleChange}
                 className="hidden"
             />
