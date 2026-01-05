@@ -14,7 +14,7 @@ interface InputProps {
     className?: string;
 }
 
-export default function Input({ label, error, id, value, onChange, placeholder, type = "text", disabled, className }: InputProps) {
+function Input({ label, error, id, value, onChange, placeholder, type = "text", disabled, className }: InputProps) {
     return (
         <div className={`flex items-center gap-4 ${className || ""}`}>
             {label && (
@@ -59,3 +59,7 @@ export default function Input({ label, error, id, value, onChange, placeholder, 
         </div>
     );
 }
+
+Input.displayName = "Input";
+
+export default Input;

@@ -12,7 +12,7 @@ interface ButtonProps {
     className?: string;
 }
 
-export default function Button({
+function Button({
     variant = "primary",
     size = "md",
     children,
@@ -102,3 +102,7 @@ export default function Button({
         </MuiButton>
     );
 }
+
+Button.displayName = "Button";
+
+export default Button;

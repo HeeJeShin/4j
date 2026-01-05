@@ -18,7 +18,7 @@ interface SelectProps {
     className?: string;
 }
 
-export default function Select({ label, options, error, id, value, onChange, disabled, className }: SelectProps) {
+function Select({ label, options, error, id, value, onChange, disabled, className }: SelectProps) {
     return (
         <div className={`flex items-center gap-4 ${className || ""}`}>
             {label && (
@@ -56,3 +56,7 @@ export default function Select({ label, options, error, id, value, onChange, dis
         </div>
     );
 }
+
+Select.displayName = "Select";
+
+export default Select;
