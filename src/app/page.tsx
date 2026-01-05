@@ -8,8 +8,8 @@ import { VenueType, CalculationResult, AnalysisResult } from "@/types";
 
 const steps = [
   { label: "행사 정보 입력", color: "bg-orange-500" },
-  { label: "계산하기", color: "bg-green-500" },
-  { label: "결과보기", color: "bg-red-500" },
+  { label: "계산하기", color: "bg-orange-500" },
+  { label: "결과보기", color: "bg-orange-500" },
 ];
 
 export default function Home() {
