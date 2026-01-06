@@ -86,7 +86,7 @@ export default function Step2Analysis({
         {/* AI 프롬프트 정보 버튼 */}
         <button
           onClick={() => setShowPromptInfo(!showPromptInfo)}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-full transition-colors"
           title="AI가 어떻게 분석하는지 보기"
         >
           <span className="text-sm">🤖</span>
@@ -96,23 +96,23 @@ export default function Step2Analysis({
 
       {/* AI 프롬프트 설명 패널 */}
       {showPromptInfo && (
-        <div className="mb-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-5">
+        <div className="mb-6 rounded-lg border-2 border-emerald-200 bg-emerald-50 p-5">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🤖</span>
-              <h3 className="font-semibold text-blue-900">AI가 도면을 분석하는 방법</h3>
+              <h3 className="font-semibold text-emerald-900">AI가 도면을 분석하는 방법</h3>
             </div>
             <button
               onClick={() => setShowPromptInfo(false)}
-              className="text-blue-400 hover:text-blue-600"
+              className="text-emerald-400 hover:text-emerald-600"
             >
               ✕
             </button>
           </div>
 
-          <div className="space-y-4 text-sm text-blue-800">
+          <div className="space-y-4 text-sm text-emerald-800">
             <div className="bg-white/70 rounded p-3">
-              <p className="font-medium mb-2">📝 AI에게 보내는 질문 (프롬프트)</p>
+              <p className="font-medium mb-2">AI에게 보내는 질문 (프롬프트)</p>
               <div className="bg-zinc-50 p-3 rounded border border-zinc-200 text-xs font-mono text-zinc-700 whitespace-pre-wrap">
 {`이 행사장/전시장 도면 이미지를 정밀하게 분석해주세요.
 
@@ -137,34 +137,34 @@ export default function Step2Analysis({
             </div>
 
             <div className="bg-white/70 rounded p-3">
-              <p className="font-medium mb-2">⚡ 분석 과정 (3초 소요)</p>
+              <p className="font-medium mb-2">분석 과정 (3초 소요)</p>
               <div className="space-y-2 text-xs">
                 <div className="flex items-start gap-2">
-                  <span className="text-blue-600">1️⃣</span>
+                  <span className="text-emerald-600 font-semibold">1.</span>
                   <div>
                     <p className="font-medium">이미지 업로드</p>
-                    <p className="text-blue-600">도면 이미지를 Gemini AI로 전송</p>
+                    <p className="text-emerald-600">도면 이미지를 Gemini AI로 전송</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-blue-600">2️⃣</span>
+                  <span className="text-emerald-600 font-semibold">2.</span>
                   <div>
                     <p className="font-medium">패턴 인식</p>
-                    <p className="text-blue-600">부스, 통로, 출입구 등 자동 감지</p>
+                    <p className="text-emerald-600">부스, 통로, 출입구 등 자동 감지</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-blue-600">3️⃣</span>
+                  <span className="text-emerald-600 font-semibold">3.</span>
                   <div>
                     <p className="font-medium">구조화된 데이터 반환</p>
-                    <p className="text-blue-600">JSON 형식으로 분석 결과 전달</p>
+                    <p className="text-emerald-600">JSON 형식으로 분석 결과 전달</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-blue-600">4️⃣</span>
+                  <span className="text-emerald-600 font-semibold">4.</span>
                   <div>
                     <p className="font-medium">화면에 표시</p>
-                    <p className="text-blue-600">부스 개수, 면적 등 결과 시각화</p>
+                    <p className="text-emerald-600">부스 개수, 면적 등 결과 시각화</p>
                   </div>
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function Step2Analysis({
 
                   {/* 분석 중 표시 */}
                   {isAnalyzing && (
-                    <span className="text-xs text-blue-600 animate-pulse">
+                    <span className="text-xs text-emerald-600 animate-pulse">
                       Gemini가 열심히 분석 중...
                     </span>
                   )}
@@ -273,56 +273,38 @@ export default function Step2Analysis({
               )}
 
               {!isAnalyzing && !notFloorPlanError && analysisResult && (
-                <div className="mt-4 rounded bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 p-4 text-sm">
+                <div className="mt-4 rounded bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 p-4 text-sm">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xl">✨</span>
-                    <p className="font-semibold text-blue-900">AI 분석 완료!</p>
-                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                    <p className="font-semibold text-emerald-900">AI 분석 완료!</p>
+                    <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                       3초 소요
                     </span>
                   </div>
                   <div className="space-y-1.5 text-zinc-700">
-                    <p className="flex items-center gap-2">
-                      <span className="text-blue-600">📦</span>
-                      부스 개수: <strong>{analysisResult.boothCount}개</strong>
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="text-blue-600">🚪</span>
-                      출입구: <strong>{analysisResult.entranceCount}개</strong>
-                    </p>
+                    <p>• 부스 개수: <strong>{analysisResult.boothCount}개</strong></p>
+                    <p>• 출입구: <strong>{analysisResult.entranceCount}개</strong></p>
                     {analysisResult.zones && analysisResult.zones.length > 0 && (
-                      <p className="flex items-center gap-2">
-                        <span className="text-blue-600">🗺️</span>
-                        존 구분: <strong>{analysisResult.zones.join(", ")}</strong>
-                      </p>
+                      <p>• 존 구분: <strong>{analysisResult.zones.join(", ")}</strong></p>
                     )}
-                    <p className="flex items-center gap-2">
-                      <span className="text-blue-600">📏</span>
-                      추정 면적: <strong>{analysisResult.estimatedTotalArea?.toLocaleString()}㎡</strong>
-                    </p>
+                    <p>• 추정 면적: <strong>{analysisResult.estimatedTotalArea?.toLocaleString()}㎡</strong></p>
                     {analysisResult.estimatedDimensions && (
-                      <p className="flex items-center gap-2">
-                        <span className="text-blue-600">📐</span>
-                        추정 크기: <strong>{analysisResult.estimatedDimensions.width}m × {analysisResult.estimatedDimensions.height}m</strong>
-                      </p>
+                      <p>• 추정 크기: <strong>{analysisResult.estimatedDimensions.width}m × {analysisResult.estimatedDimensions.height}m</strong></p>
                     )}
                     {analysisResult.areaCalculationMethod && (
-                      <p className="text-xs text-blue-600 mt-2 pl-6">
+                      <p className="text-xs text-emerald-600 mt-2 pl-4">
                         ({analysisResult.areaCalculationMethod})
                       </p>
                     )}
                     {analysisResult.features && analysisResult.features.length > 0 && (
-                      <p className="flex items-center gap-2">
-                        <span className="text-blue-600">🎯</span>
-                        특징: <strong>{analysisResult.features.join(", ")}</strong>
-                      </p>
+                      <p>• 특징: <strong>{analysisResult.features.join(", ")}</strong></p>
                     )}
                   </div>
 
                   {/* Gemini 크레딧 */}
-                  <div className="mt-3 pt-3 border-t border-blue-200">
-                    <p className="text-xs text-blue-600 text-center">
-                      🤖 Powered by Google Gemini Vision AI
+                  <div className="mt-3 pt-3 border-t border-emerald-200">
+                    <p className="text-xs text-emerald-600 text-center">
+                      Powered by Google Gemini Vision AI
                     </p>
                   </div>
                 </div>

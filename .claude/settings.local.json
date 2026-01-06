@@ -4,7 +4,17 @@
       "Bash(pnpm:*)",
       "Bash(git add:*)",
       "Bash(git push:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "Bash(npm run dev:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(kill:*)",
+      "Bash(pkill:*)",
+      "Bash(nvm alias:*)",
+      "Bash(git commit:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
