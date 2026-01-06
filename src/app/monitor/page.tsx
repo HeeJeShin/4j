@@ -66,7 +66,7 @@ function MonitorContent() {
   const [isRunning, setIsRunning] = useState(false);
   const [history, setHistory] = useState<{ time: string; count: number; level: number }[]>([]);
   const [showPreview, setShowPreview] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [showFormulaInfo, setShowFormulaInfo] = useState(false);
   const [chatMessages, setChatMessages] = useState<Array<{
     level: number;
     count: number;
@@ -305,46 +305,103 @@ function MonitorContent() {
 
         {/* 현재 상태 카드 */}
         <div className="rounded-lg bg-white p-4 sm:p-8 shadow-sm">
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-base font-semibold text-zinc-900">
               실시간 혼잡도 모니터링
             </h2>
-            <div className="relative">
-              <button
-                onClick={() => setShowTooltip(!showTooltip)}
-                className="w-5 h-5 rounded-full bg-zinc-200 hover:bg-zinc-300 text-zinc-600 text-xs flex items-center justify-center transition-colors"
-              >
-                ?
-              </button>
-              {showTooltip && (
-                <div className="absolute left-0 sm:left-0 right-0 sm:right-auto top-7 z-40 w-full sm:w-64 rounded-lg bg-zinc-800 text-white p-4 shadow-lg text-xs">
-                  <p className="font-bold mb-2">혼잡도 기준 인원</p>
-                  <ul className="space-y-1.5">
-                    <li className="flex justify-between">
-                      <span className="text-green-400">Level 1 (쾌적)</span>
-                      <span>{capacities.level1.toLocaleString()}명 이하</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-blue-400">Level 2 (여유)</span>
-                      <span>{capacities.level2.toLocaleString()}명 이하</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-yellow-400">Level 3 (혼잡)</span>
-                      <span>{capacities.level3.toLocaleString()}명 이하</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-orange-400">Level 4 (매우혼잡)</span>
-                      <span>{capacities.level4.toLocaleString()}명 이하</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span className="text-red-400">Level 5 (위험)</span>
-                      <span>{capacities.level5.toLocaleString()}명 초과</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+
+            {/* 혼잡도 계산 원리 버튼 */}
+            <button
+              onClick={() => setShowFormulaInfo(!showFormulaInfo)}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-full transition-colors"
+              title="혼잡도 계산 방법 보기"
+            >
+              <span className="text-sm">📊</span>
+              <span>계산 원리</span>
+            </button>
           </div>
+
+          {/* 혼잡도 계산 공식 설명 패널 */}
+          {showFormulaInfo && (
+            <div className="mb-6 rounded-lg border-2 border-emerald-200 bg-emerald-50 p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">📊</span>
+                  <h3 className="font-semibold text-emerald-900">혼잡도 계산 공식</h3>
+                </div>
+                <button
+                  onClick={() => setShowFormulaInfo(false)}
+                  className="text-emerald-400 hover:text-emerald-600"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4 text-sm text-emerald-800">
+                <div className="bg-white/70 rounded p-3">
+                  <p className="font-medium mb-2">기본 계산식</p>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-start gap-2">
+                      <span className="text-emerald-600 font-semibold">1.</span>
+                      <div>
+                        <p className="font-medium">행사장 유형별 기준 밀도</p>
+                        <p className="text-emerald-600">스탠딩: 2.0명/㎡ / 연회형: 0.7명/㎡ / 극장형: 1.2명/㎡</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-emerald-600 font-semibold">2.</span>
+                      <div>
+                        <p className="font-medium">레벨별 수용 인원</p>
+                        <p className="text-emerald-600">총 면적 × 기준 밀도 × 레벨별 비율</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-emerald-600 font-semibold">3.</span>
+                      <div>
+                        <p className="font-medium">AI 보정 적용</p>
+                        <p className="text-emerald-600">계산된 인원 × 0.85 (15% 안전 마진)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/70 rounded p-3">
+                  <p className="font-medium mb-2">레벨별 밀도 비율</p>
+                  <div className="space-y-1 text-xs">
+                    <p className="flex justify-between">
+                      <span className="text-green-600">Level 1 (쾌적)</span>
+                      <span className="font-medium">기준 밀도의 30%</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-blue-600">Level 2 (여유)</span>
+                      <span className="font-medium">기준 밀도의 50%</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-yellow-600">Level 3 (혼잡)</span>
+                      <span className="font-medium">기준 밀도의 70%</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-orange-600">Level 4 (매우혼잡)</span>
+                      <span className="font-medium">기준 밀도의 90%</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-red-600">Level 5 (위험)</span>
+                      <span className="font-medium">기준 밀도의 110%</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white/70 rounded p-3">
+                  <p className="font-medium mb-2">안전 고려사항</p>
+                  <div className="space-y-1 text-xs">
+                    <p>• 비상구 처리량: 출입구 1개당 275명</p>
+                    <p>• 통로 병목: 82명당 1m 통로폭 필요</p>
+                    <p>• AI 보정으로 실제 환경 반영</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 현재 인원 표시 */}
           <div className={`rounded-lg p-6 mb-6 ${currentLevelInfo.bgLight} border-2 ${currentLevel >= 3 ? "border-current animate-pulse" : "border-transparent"}`}>
