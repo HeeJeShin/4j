@@ -43,8 +43,13 @@ function MonitorContent() {
   const [interval, setInterval] = useState<IntervalType>("1min");
   const [isRunning, setIsRunning] = useState(false);
   const [history, setHistory] = useState<{ time: string; count: number; level: number }[]>([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertLevel, setAlertLevel] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Array<{
+    level: number;
+    count: number;
+    time: string;
+  }>>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // URL 파라미터에서 수용 인원 정보 가져오기
@@ -95,16 +100,14 @@ function MonitorContent() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString("ko-KR", {
       hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
+      minute: "2-digit"
     });
 
     setHistory(prev => [...prev.slice(-19), { time: timeStr, count: newCount, level }]);
 
-    // Level 3 이상이면 알럿 표시
-    if (level >= 3) {
-      setAlertLevel(level);
-      setShowAlert(true);
+    // Level 3 이상이면 카톡 메시지 추가
+    if (level >= 3 && showPreview) {
+      setChatMessages(prev => [...prev, { level, count: newCount, time: timeStr }]);
     }
   }, [capacities, currentCount, getCurrentLevel]);
 
@@ -120,9 +123,17 @@ function MonitorContent() {
     };
   }, [isRunning, interval, generateRandomCount, capacities]);
 
+  // 채팅 메시지 추가 시 스크롤 아래로 이동
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages]);
+
   const handleStart = () => {
     setIsRunning(true);
     setHistory([]);
+    setChatMessages([]);
     generateRandomCount();
   };
 
@@ -131,10 +142,6 @@ function MonitorContent() {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
   };
 
   const currentLevel = getCurrentLevel(currentCount);
@@ -155,34 +162,118 @@ function MonitorContent() {
 
   return (
     <>
-      {/* 알럿 모달 */}
-      {showAlert && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className={`mx-4 max-w-md rounded-lg bg-white p-6 shadow-xl ${alertLevel >= 4 ? "animate-pulse" : ""}`}>
-            <div className={`mb-4 text-center ${levelInfo[alertLevel - 1].textColor}`}>
-              <div className="text-5xl mb-2">
-                {alertLevel === 3 && "⚠️"}
-                {alertLevel === 4 && "🚨"}
-                {alertLevel === 5 && "🆘"}
+      {/* 아이폰 목업 + 카카오톡 대화 */}
+      {showPreview && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+          onClick={() => setShowPreview(false)}
+        >
+          {/* 아이폰 목업 */}
+          <div
+            className="w-[360px] h-[720px] rounded-[50px] p-3 shadow-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 노치 */}
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-black rounded-full z-10"></div>
+
+            {/* 화면 */}
+            <div className="w-full h-full bg-white rounded-[38px] overflow-hidden relative">
+              {/* 상태바 */}
+              <div className="absolute top-0 left-0 right-0 h-10 flex items-center justify-between px-6 pt-2 text-zinc-800 text-xs z-10 bg-white">
+                <span className="font-semibold">9:41</span>
+                <div className="flex items-center gap-1">
+                  <span>📶</span>
+                  <span>📡</span>
+                  <span>🔋</span>
+                </div>
               </div>
-              <h3 className="text-xl font-bold">
-                {levelInfo[alertLevel - 1].label} 상태
-              </h3>
-            </div>
-            <p className="text-center text-zinc-700 mb-4">
-              현재 인원: <strong>{currentCount.toLocaleString()}명</strong>
-              <br />
-              기준 인원: {capacities[`level${alertLevel}` as keyof Capacities].toLocaleString()}명
-            </p>
-            <p className="text-center text-sm text-zinc-500 mb-4">
-              {alertLevel === 3 && "혼잡 상태입니다. 입장 속도를 조절해주세요."}
-              {alertLevel === 4 && "매우 혼잡합니다! 입장을 제한해주세요."}
-              {alertLevel === 5 && "위험 수준입니다! 즉시 인원 통제가 필요합니다."}
-            </p>
-            <div className="flex justify-center">
-              <Button variant="primary" onClick={handleCloseAlert}>
-                확인
-              </Button>
+
+              {/* 카카오톡 대화 화면 */}
+              <div className="w-full h-full pt-10">
+                {/* 채팅방 헤더 */}
+                <div className="bg-zinc-100 border-b border-zinc-200 px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <button className="text-zinc-600">←</button>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                        💬
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-zinc-800">4J 혼잡도 알림</p>
+                        <p className="text-xs text-zinc-500">실시간 모니터링</p>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="text-zinc-600 text-lg">☰</button>
+                </div>
+
+                {/* 대화 내용 */}
+                <div className="h-[calc(100%-120px)] overflow-y-auto bg-sky-100 p-4 space-y-3">
+                  {/* 시스템 메시지 */}
+                  <div className="flex justify-center">
+                    <div className="bg-white/80 px-3 py-1 rounded-full text-xs text-zinc-600">
+                      {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
+                    </div>
+                  </div>
+
+                  {/* 채팅 메시지 목록 */}
+                  {chatMessages.length === 0 && (
+                    <div className="flex flex-col items-start">
+                      <div className="flex items-end gap-2 max-w-[80%]">
+                        <div className="bg-yellow-300 rounded-2xl rounded-bl-sm px-3 py-2 shadow-sm">
+                          <p className="text-sm text-zinc-800">
+                            실시간 혼잡도 모니터링이 시작되면 알림을 보내드립니다.
+                          </p>
+                        </div>
+                        <span className="text-xs text-zinc-500 mb-1 whitespace-nowrap">방금</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {chatMessages.map((msg, idx) => (
+                    <div key={idx} className="flex flex-col items-start animate-slide-in">
+                      <div className="flex items-end gap-2 max-w-[80%]">
+                        <div className="bg-yellow-300 rounded-2xl rounded-bl-sm px-3 py-2 shadow-sm">
+                          <div className="flex items-start gap-2 mb-1">
+                            <span className="text-sm">
+                              {msg.level === 3 && "⚠️"}
+                              {msg.level === 4 && "🚨"}
+                              {msg.level === 5 && "🆘"}
+                            </span>
+                            <p className={`font-bold text-base ${levelInfo[msg.level - 1].textColor}`}>
+                              {levelInfo[msg.level - 1].label} 상태 알림!
+                            </p>
+                          </div>
+                          <div className="text-xs text-zinc-800 space-y-1">
+                            <p>현재 인원: <strong className="text-zinc-900">{msg.count.toLocaleString()}명</strong></p>
+                            <p>기준 인원: {capacities[`level${msg.level}` as keyof Capacities].toLocaleString()}명</p>
+                            <p className="mt-2 text-zinc-700">
+                              {msg.level === 3 && "입장 속도 조절이 필요합니다"}
+                              {msg.level === 4 && "⚠️ 입장을 제한해주세요!"}
+                              {msg.level === 5 && "🚨 즉시 인원 통제 필요!"}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs text-zinc-500 mb-1 whitespace-nowrap">{msg.time}</span>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* 스크롤 끝 마커 */}
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* 입력창 (disabled) */}
+                <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-zinc-200 px-3 py-2 pointer-events-none opacity-60">
+                  <div className="flex items-center gap-2">
+                    <button className="text-zinc-400 text-lg" disabled>+</button>
+                    <div className="flex-1 bg-zinc-100 rounded-full px-3 py-1.5">
+                      <p className="text-xs text-zinc-400">메시지를 입력하세요</p>
+                    </div>
+                    <button className="text-zinc-400 text-lg" disabled>😊</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -255,24 +346,35 @@ function MonitorContent() {
           </div>
 
           {/* 컨트롤 영역 */}
-          <div className="flex items-center justify-center gap-4 border-t border-zinc-100 pt-6">
-            <Select
-              label=""
-              id="interval"
-              options={intervalOptions}
-              value={interval}
-              onChange={(e) => setInterval(e.target.value as IntervalType)}
-              disabled={isRunning}
-            />
-            {!isRunning ? (
-              <Button variant="primary" onClick={handleStart}>
-                모니터링 시작
-              </Button>
-            ) : (
-              <Button variant="secondary" onClick={handleStop}>
-                모니터링 중지
-              </Button>
-            )}
+          <div className="flex flex-col items-center gap-4 border-t border-zinc-100 pt-6">
+            <div className="flex items-center justify-center gap-4">
+              <Select
+                label=""
+                id="interval"
+                options={intervalOptions}
+                value={interval}
+                onChange={(e) => setInterval(e.target.value as IntervalType)}
+                disabled={isRunning}
+              />
+              {!isRunning ? (
+                <Button variant="primary" onClick={handleStart}>
+                  모니터링 시작
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={handleStop}>
+                  모니터링 중지
+                </Button>
+              )}
+            </div>
+
+            {/* 카카오톡 알림 미리보기 버튼 */}
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-zinc-800 font-medium rounded-lg shadow-sm transition-colors text-sm"
+            >
+              <span className="text-lg">💬</span>
+              <span>{showPreview ? "미리보기 닫기" : "카톡 알림 미리보기"}</span>
+            </button>
           </div>
 
           {isRunning && (
