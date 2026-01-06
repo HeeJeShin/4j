@@ -230,7 +230,7 @@ export default function Step2Analysis({
 
               {/* AI 분석 버튼 + 설명 */}
               <div className="mt-3 space-y-2">
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -242,7 +242,7 @@ export default function Step2Analysis({
 
                   {/* 분석 중 표시 */}
                   {isAnalyzing && (
-                    <span className="text-xs text-emerald-600 animate-pulse">
+                    <span className="text-xs text-emerald-600 animate-pulse text-center">
                       Gemini가 열심히 분석 중...
                     </span>
                   )}
