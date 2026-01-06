@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Header } from "@/components/layout";
 import { Button, Select } from "@/components/common";
 
@@ -155,6 +156,12 @@ function MonitorContent() {
           <p className="text-sm text-zinc-400 mt-2">
             먼저 수용인원 계산을 진행해주세요.
           </p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
+          >
+            ← 수용인원 계산으로
+          </Link>
         </div>
       </main>
     );
@@ -280,6 +287,14 @@ function MonitorContent() {
       )}
 
       <main className="mx-auto max-w-4xl px-6 py-8">
+        {/* 뒤로가기 */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 mb-4 text-sm text-zinc-500 hover:text-zinc-800 transition-colors"
+        >
+          ← 수용인원 계산으로
+        </Link>
+
         {/* 현재 상태 카드 */}
         <div className="rounded-lg bg-white p-8 shadow-sm">
           <h2 className="mb-6 text-base font-semibold text-zinc-900">

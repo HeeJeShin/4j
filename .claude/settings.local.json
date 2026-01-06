@@ -14,7 +14,9 @@
       "Bash(pkill:*)",
       "Bash(nvm alias:*)",
       "Bash(git commit:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(ssh-keygen:*)"
     ],
     "deny": [],
     "ask": []
