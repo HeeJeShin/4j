@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button, CongestionLevel } from "@/components/common";
 import { CalculationResult } from "@/types";
 
@@ -15,6 +16,20 @@ export default function Step3Results({
   floorPlanPreview,
   onReset,
 }: Step3ResultsProps) {
+  const router = useRouter();
+
+  const handleMonitor = () => {
+    if (!result) return;
+    const params = new URLSearchParams({
+      level1: result.capacities.level1.toString(),
+      level2: result.capacities.level2.toString(),
+      level3: result.capacities.level3.toString(),
+      level4: result.capacities.level4.toString(),
+      level5: result.capacities.level5.toString(),
+    });
+    router.push(`/monitor?${params.toString()}`);
+  };
+
   const handleSave = () => {
     if (!result) return;
 
@@ -62,8 +77,8 @@ export default function Step3Results({
             <Button variant="secondary" onClick={onReset}>
               다시 계산하기
             </Button>
-            <Button variant="primary" onClick={handleSave}>
-              저장하기
+            <Button variant="primary" onClick={handleMonitor}>
+              실시간 혼잡도 체크
             </Button>
           </div>
         </>
