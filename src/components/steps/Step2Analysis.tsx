@@ -137,7 +137,7 @@ export default function Step2Analysis({
             </div>
 
             <div className="bg-white/70 rounded p-3">
-              <p className="font-medium mb-2">분석 과정 (3초 소요)</p>
+              <p className="font-medium mb-2">분석 과정 (10초 소요)</p>
               <div className="space-y-2 text-xs">
                 <div className="flex items-start gap-2">
                   <span className="text-emerald-600 font-semibold">1.</span>
@@ -250,7 +250,7 @@ export default function Step2Analysis({
 
                 {!isAnalyzing && !analysisResult && (
                   <p className="text-xs text-center text-zinc-500">
-                    💡 버튼을 누르면 AI가 3초 안에 도면을 분석합니다
+                    💡 버튼을 누르면 AI가 10초 안에 도면을 분석합니다
                   </p>
                 )}
               </div>
@@ -278,7 +278,7 @@ export default function Step2Analysis({
                     <span className="text-xl">✨</span>
                     <p className="font-semibold text-emerald-900">AI 분석 완료!</p>
                     <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
-                      3초 소요
+                      10초 소요
                     </span>
                   </div>
                   <div className="space-y-1.5 text-zinc-700">

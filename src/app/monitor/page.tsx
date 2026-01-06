@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Header } from "@/components/layout";
 import { Button, Select } from "@/components/common";
 
@@ -44,6 +45,7 @@ function MonitorContent() {
   const [isRunning, setIsRunning] = useState(false);
   const [history, setHistory] = useState<{ time: string; count: number; level: number }[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [chatMessages, setChatMessages] = useState<Array<{
     level: number;
     count: number;
@@ -155,6 +157,12 @@ function MonitorContent() {
           <p className="text-sm text-zinc-400 mt-2">
             먼저 수용인원 계산을 진행해주세요.
           </p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
+          >
+            ← 수용인원 계산으로
+          </Link>
         </div>
       </main>
     );
@@ -280,11 +288,56 @@ function MonitorContent() {
       )}
 
       <main className="mx-auto max-w-4xl px-6 py-8">
+        {/* 뒤로가기 */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 mb-4 text-sm text-zinc-500 hover:text-zinc-800 transition-colors"
+        >
+          ← 수용인원 계산으로
+        </Link>
+
         {/* 현재 상태 카드 */}
         <div className="rounded-lg bg-white p-8 shadow-sm">
-          <h2 className="mb-6 text-base font-semibold text-zinc-900">
-            실시간 혼잡도 모니터링
-          </h2>
+          <div className="flex items-center gap-2 mb-6">
+            <h2 className="text-base font-semibold text-zinc-900">
+              실시간 혼잡도 모니터링
+            </h2>
+            <div className="relative">
+              <button
+                onClick={() => setShowTooltip(!showTooltip)}
+                className="w-5 h-5 rounded-full bg-zinc-200 hover:bg-zinc-300 text-zinc-600 text-xs flex items-center justify-center transition-colors"
+              >
+                ?
+              </button>
+              {showTooltip && (
+                <div className="absolute left-0 top-7 z-40 w-64 rounded-lg bg-zinc-800 text-white p-4 shadow-lg text-xs">
+                  <p className="font-bold mb-2">혼잡도 기준 인원</p>
+                  <ul className="space-y-1.5">
+                    <li className="flex justify-between">
+                      <span className="text-green-400">Level 1 (쾌적)</span>
+                      <span>{capacities.level1.toLocaleString()}명 이하</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-blue-400">Level 2 (여유)</span>
+                      <span>{capacities.level2.toLocaleString()}명 이하</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-yellow-400">Level 3 (혼잡)</span>
+                      <span>{capacities.level3.toLocaleString()}명 이하</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-orange-400">Level 4 (매우혼잡)</span>
+                      <span>{capacities.level4.toLocaleString()}명 이하</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-red-400">Level 5 (위험)</span>
+                      <span>{capacities.level5.toLocaleString()}명 초과</span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* 현재 인원 표시 */}
           <div className={`rounded-lg p-6 mb-6 ${currentLevelInfo.bgLight} border-2 ${currentLevel >= 3 ? "border-current animate-pulse" : "border-transparent"}`}>
