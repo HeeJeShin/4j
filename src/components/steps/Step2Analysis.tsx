@@ -27,6 +27,7 @@ export default function Step2Analysis({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [notFloorPlanError, setNotFloorPlanError] = useState<string | null>(null);
   const [showPromptInfo, setShowPromptInfo] = useState(false);
+  const [showQuotaError, setShowQuotaError] = useState(false);
 
   const handleFileSelect = (file: File) => {
     setFloorPlan(file);
@@ -71,15 +72,51 @@ export default function Step2Analysis({
       }
     } catch (error) {
       console.error("이미지 분석 오류:", error);
-      alert("이미지 분석 중 오류가 발생했습니다.");
+      const errorMessage = error instanceof Error ? error.message : "";
+      if (errorMessage.includes("429") || errorMessage.includes("quota")) {
+        setShowQuotaError(true);
+      } else {
+        alert("이미지 분석 중 오류가 발생했습니다.");
+      }
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
+    <>
+      {/* 할당량 초과 모달 */}
+      {showQuotaError && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="mx-4 max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <div className="text-center">
+              <div className="text-5xl mb-4">😅</div>
+              <h3 className="text-lg font-bold text-zinc-900 mb-2">
+                오늘 할당량을 모두 사용했어요
+              </h3>
+              <p className="text-sm text-zinc-600 mb-4">
+                AI 분석 기능은 하루 사용량이 제한되어 있어요.
+                <br />
+                내일 다시 시도해주세요!
+              </p>
+              <div className="bg-amber-50 rounded-lg p-3 mb-4">
+                <p className="text-xs text-amber-700">
+                  💡 도면 없이도 면적을 직접 입력하면 수용인원을 계산할 수 있어요
+                </p>
+              </div>
+              <button
+                onClick={() => setShowQuotaError(false)}
+                className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="rounded-lg bg-white p-8 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
         <h2 className="text-base font-semibold text-zinc-900">
           AI로 도면 분석하기
         </h2>
@@ -93,9 +130,9 @@ export default function Step2Analysis({
           <span className="text-sm">🤖</span>
           <span>AI 분석 원리</span>
         </button>
-      </div>
+        </div>
 
-      {/* AI 프롬프트 설명 패널 */}
+        {/* AI 프롬프트 설명 패널 */}
       {showPromptInfo && (
         <div className="mb-6 rounded-lg border-2 border-emerald-200 bg-emerald-50 p-5">
           <div className="flex items-start justify-between mb-3">
@@ -327,5 +364,6 @@ export default function Step2Analysis({
         )}
       </div>
     </div>
+    </>
   );
 }

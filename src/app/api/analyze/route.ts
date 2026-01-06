@@ -3,6 +3,23 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!);
 
+// Mock 데이터 (로컬 테스트용)
+const MOCK_ANALYSIS_RESULT = {
+    isFloorPlan: true,
+    boothCount: 24,
+    emptySpaceRatio: 0.35,
+    entranceCount: 3,
+    zones: ["Zone A", "Zone B", "Zone C"],
+    features: ["메인 무대", "안내 데스크", "휴게 라운지"],
+    analysis: "[MOCK] 전시장 도면입니다. 24개의 부스가 3개 존으로 구분되어 있습니다.",
+    estimatedDimensions: {
+        width: 50,
+        height: 40
+    },
+    estimatedTotalArea: 2000,
+    areaCalculationMethod: "[MOCK] 테스트용 샘플 데이터"
+};
+
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
@@ -14,6 +31,29 @@ export async function POST(request: NextRequest) {
                 { error: "이미지가 필요합니다." },
                 { status: 400 }
             );
+        }
+
+        // Mock 에러 모드: MOCK_ERROR=quota 설정 시 할당량 초과 에러 시뮬레이션
+        if (process.env.MOCK_ERROR === "quota") {
+            console.log("[MOCK MODE] 할당량 초과 에러 시뮬레이션");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return NextResponse.json(
+                { error: "429 Resource has been exhausted (quota)" },
+                { status: 500 }
+            );
+        }
+
+        // Mock 모드: USE_MOCK_DATA=true 설정 시 API 호출 없이 샘플 데이터 반환
+        if (process.env.USE_MOCK_DATA === "true") {
+            console.log("[MOCK MODE] 샘플 데이터 반환");
+            // 실제 분석처럼 약간의 딜레이 추가
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            return NextResponse.json({
+                ...MOCK_ANALYSIS_RESULT,
+                boothSize,
+                estimatedBoothArea: MOCK_ANALYSIS_RESULT.boothCount * boothSize,
+            });
         }
 
         // 이미지를 base64로 변환
