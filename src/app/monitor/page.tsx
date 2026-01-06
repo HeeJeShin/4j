@@ -390,7 +390,7 @@ function MonitorContent() {
             <h3 className="mb-4 text-sm font-semibold text-zinc-900">
               인원 변동 히스토리
             </h3>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-48 overflow-y-auto">
               <table className="w-full text-sm">
                 <thead className="bg-zinc-50">
                   <tr>
