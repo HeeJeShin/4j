@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
         const base64 = Buffer.from(bytes).toString("base64");
 
         // Gemini 모델 초기화
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         const prompt = `
             먼저 이 이미지가 행사장/전시장 도면인지 판단해주세요.
