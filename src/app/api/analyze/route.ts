@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
         const base64 = Buffer.from(bytes).toString("base64");
 
         // Gemini 모델 초기화
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
             먼저 이 이미지가 행사장/전시장 도면인지 판단해주세요.
@@ -105,8 +105,9 @@ export async function POST(request: NextRequest) {
         });
     } catch (error) {
         console.error("분석 오류:", error);
+        const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류";
         return NextResponse.json(
-            { error: "이미지 분석 중 오류가 발생했습니다." },
+            { error: errorMessage },
             { status: 500 }
         );
     }

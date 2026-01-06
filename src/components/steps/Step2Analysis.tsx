@@ -56,12 +56,13 @@ export default function Step2Analysis({
 
       const data = await response.json();
 
-      if (data.error === "NOT_FLOOR_PLAN") {
-        setNotFloorPlanError(data.detectedContent || "알 수 없는 이미지");
-        return;
+      if (!response.ok) {
+        if (data.error === "NOT_FLOOR_PLAN") {
+          setNotFloorPlanError(data.detectedContent || "알 수 없는 이미지");
+          return;
+        }
+        throw new Error(data.error || `분석 실패 (${response.status})`);
       }
-
-      if (!response.ok) throw new Error("분석 실패");
 
       setAnalysisResult(data as AnalysisResult);
 
