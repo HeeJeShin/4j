@@ -1,6 +1,7 @@
 "use client";
 
-import { FormControl, InputLabel, Select as MuiSelect, MenuItem, FormHelperText } from "@mui/material";
+import { FormControl, Select as MuiSelect, MenuItem, FormHelperText } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 
 interface SelectOption {
     value: string;
@@ -13,7 +14,7 @@ interface SelectProps {
     error?: string;
     id?: string;
     value?: string;
-    onChange?: (e: any) => void;
+    onChange?: (e: SelectChangeEvent<string>) => void;
     disabled?: boolean;
     className?: string;
 }
@@ -32,16 +33,16 @@ function Select({ label, options, error, id, value, onChange, disabled, classNam
                     value={value}
                     onChange={onChange}
                     sx={{
-                        fontSize: '0.875rem',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#d4d4d8',
+                        fontSize: "0.875rem",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d4d4d8",
                         },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#a1a1aa',
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#a1a1aa",
                         },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#18181b',
-                            borderWidth: '2px',
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#18181b",
+                            borderWidth: "2px",
                         },
                     }}
                 >

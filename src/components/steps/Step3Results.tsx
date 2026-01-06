@@ -30,19 +30,6 @@ export default function Step3Results({
     router.push(`/monitor?${params.toString()}`);
   };
 
-  const handleSave = () => {
-    if (!result) return;
-
-    // TODO: 저장 기능 구현
-    const data = {
-      timestamp: new Date().toISOString(),
-      result,
-    };
-
-    console.log("저장할 데이터:", data);
-    alert("저장 기능은 추후 구현 예정입니다.");
-  };
-
   return (
     <div className="rounded-lg bg-white p-8 shadow-sm">
       <h2 className="mb-6 text-base font-semibold text-zinc-900">계산 결과</h2>

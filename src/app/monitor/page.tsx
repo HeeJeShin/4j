@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/layout";
 import { Button, Select } from "@/components/common";
@@ -39,8 +39,29 @@ const levelInfo = [
 
 function MonitorContent() {
   const searchParams = useSearchParams();
-  const [capacities, setCapacities] = useState<Capacities | null>(null);
-  const [currentCount, setCurrentCount] = useState(0);
+  const capacities = useMemo<Capacities | null>(() => {
+    const level1 = searchParams.get("level1");
+    const level2 = searchParams.get("level2");
+    const level3 = searchParams.get("level3");
+    const level4 = searchParams.get("level4");
+    const level5 = searchParams.get("level5");
+
+    if (!level1 || !level2 || !level3 || !level4 || !level5) return null;
+
+    return {
+      level1: Number(level1),
+      level2: Number(level2),
+      level3: Number(level3),
+      level4: Number(level4),
+      level5: Number(level5),
+    };
+  }, [searchParams]);
+
+  const [currentCount, setCurrentCount] = useState(() => {
+    if (!capacities) return 0;
+    // 초기값은 Level 2~3 중간값(알럿 테스트용)
+    return Math.floor((capacities.level2 + capacities.level3) / 2);
+  });
   const [interval, setInterval] = useState<IntervalType>("1min");
   const [isRunning, setIsRunning] = useState(false);
   const [history, setHistory] = useState<{ time: string; count: number; level: number }[]>([]);
@@ -53,27 +74,12 @@ function MonitorContent() {
   }>>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const currentCountRef = useRef<number>(currentCount);
 
-  // URL 파라미터에서 수용 인원 정보 가져오기
+  // 최신 currentCount를 interval 콜백에서 안정적으로 사용하기 위한 ref 동기화
   useEffect(() => {
-    const level1 = searchParams.get("level1");
-    const level2 = searchParams.get("level2");
-    const level3 = searchParams.get("level3");
-    const level4 = searchParams.get("level4");
-    const level5 = searchParams.get("level5");
-
-    if (level1 && level2 && level3 && level4 && level5) {
-      setCapacities({
-        level1: Number(level1),
-        level2: Number(level2),
-        level3: Number(level3),
-        level4: Number(level4),
-        level5: Number(level5),
-      });
-      // 초기값은 Level 3(혼잡) 기준으로 설정 - 알럿 테스트용
-      setCurrentCount(Math.floor((Number(level2) + Number(level3)) / 2));
-    }
-  }, [searchParams]);
+    currentCountRef.current = currentCount;
+  }, [currentCount]);
 
   // 현재 혼잡도 레벨 계산
   const getCurrentLevel = useCallback((count: number): number => {
@@ -89,9 +95,10 @@ function MonitorContent() {
   const generateRandomCount = useCallback(() => {
     if (!capacities) return;
 
+    const base = currentCountRef.current;
     // 현재 값 기준으로 -15% ~ +20% 범위에서 변동
-    const variation = currentCount * (Math.random() * 0.35 - 0.15);
-    let newCount = Math.round(currentCount + variation);
+    const variation = base * (Math.random() * 0.35 - 0.15);
+    let newCount = Math.round(base + variation);
 
     // 최소 0, 최대 level5의 110%로 제한
     newCount = Math.max(0, Math.min(newCount, Math.floor(capacities.level5 * 1.1)));
@@ -111,7 +118,7 @@ function MonitorContent() {
     if (level >= 3 && showPreview) {
       setChatMessages(prev => [...prev, { level, count: newCount, time: timeStr }]);
     }
-  }, [capacities, currentCount, getCurrentLevel]);
+  }, [capacities, getCurrentLevel, showPreview]);
 
   // 타이머 관리
   useEffect(() => {

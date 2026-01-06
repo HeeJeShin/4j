@@ -6,9 +6,10 @@ interface Step {
 interface ProgressStepperProps {
   currentStep: number;
   steps: Step[];
+  onStepChange?: (step: number) => void;
 }
 
-export default function ProgressStepper({ currentStep, steps }: ProgressStepperProps) {
+export default function ProgressStepper({ currentStep, steps, onStepChange }: ProgressStepperProps) {
   return (
     <div className="w-full py-6 sm:py-10">
       <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-8 max-w-4xl mx-auto px-2 sm:px-4 md:px-6">
@@ -17,19 +18,27 @@ export default function ProgressStepper({ currentStep, steps }: ProgressStepperP
           const isActive = stepNumber === currentStep;
           const isCompleted = stepNumber < currentStep;
           const isLast = index === steps.length - 1;
+          const isClickable = Boolean(onStepChange) && (isCompleted || isActive);
 
           return (
             <div key={stepNumber} className="flex items-center">
               {/* Step Circle */}
               <div className="flex flex-col items-center relative min-w-[60px] sm:min-w-[80px] md:min-w-[120px]">
-                <div
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!onStepChange) return;
+                    if (stepNumber > currentStep) return; // 앞으로 점프는 금지
+                    onStepChange(stepNumber);
+                  }}
+                  disabled={!isClickable}
                   className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-sm sm:text-base md:text-lg font-bold transition-all duration-300 ${
                     isActive
                       ? `${step.color} text-white shadow-lg scale-110`
                       : isCompleted
                       ? "bg-emerald-500 text-white shadow-md"
                       : "bg-zinc-200 text-zinc-400"
-                  }`}
+                  } ${isClickable ? "cursor-pointer" : "cursor-default"} disabled:opacity-100`}
                 >
                   {isCompleted ? (
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +47,7 @@ export default function ProgressStepper({ currentStep, steps }: ProgressStepperP
                   ) : (
                     stepNumber
                   )}
-                </div>
+                </button>
                 <p
                   className={`mt-2 sm:mt-3 text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors ${
                     isActive ? "text-zinc-900" : isCompleted ? "text-zinc-700" : "text-zinc-400"

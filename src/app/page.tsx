@@ -77,12 +77,6 @@ export default function Home() {
     }
   };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
   const canProceed = () => {
     if (currentStep === 1) {
       return eventName.trim() !== "";
@@ -98,7 +92,14 @@ export default function Home() {
       <Header />
 
       <main className="mx-auto max-w-4xl px-6 py-8">
-        <ProgressStepper currentStep={currentStep} steps={steps} />
+        <ProgressStepper
+          currentStep={currentStep}
+          steps={steps}
+          onStepChange={(step) => {
+            // 이전(또는 현재) 단계만 허용
+            if (step <= currentStep) setCurrentStep(step);
+          }}
+        />
 
         <div className="mt-8">
           {currentStep === 1 && (
@@ -135,11 +136,6 @@ export default function Home() {
 
         {currentStep < 3 && (
           <div className="mt-8 flex justify-center gap-4">
-            {currentStep > 1 && (
-              <Button variant="secondary" onClick={handlePrevious}>
-                이전
-              </Button>
-            )}
             <Button
               variant="primary"
               onClick={handleNext}
