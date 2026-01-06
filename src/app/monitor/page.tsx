@@ -301,7 +301,7 @@ function MonitorContent() {
                   {[...history].reverse().map((item, idx) => (
                     <tr key={idx} className="hover:bg-zinc-50">
                       <td className="px-4 py-2 text-zinc-600">{item.time}</td>
-                      <td className="px-4 py-2 text-right font-medium">{item.count.toLocaleString()}명</td>
+                      <td className="px-4 py-2 text-right font-bold text-zinc-900">{item.count.toLocaleString()}명</td>
                       <td className="px-4 py-2 text-center">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-white ${levelInfo[item.level - 1].color}`}>
                           {levelInfo[item.level - 1].label}
