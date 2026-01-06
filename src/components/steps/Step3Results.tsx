@@ -73,7 +73,7 @@ export default function Step3Results({
             </p>
           )}
 
-          <div className="mt-6 flex justify-center gap-4">
+          <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <Button variant="secondary" onClick={onReset}>
               다시 계산하기
             </Button>

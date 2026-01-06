@@ -151,8 +151,8 @@ function MonitorContent() {
 
   if (!capacities) {
     return (
-      <main className="mx-auto max-w-4xl px-6 py-8">
-        <div className="rounded-lg bg-white p-8 shadow-sm text-center">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-4 sm:py-8">
+        <div className="rounded-lg bg-white p-4 sm:p-8 shadow-sm text-center">
           <p className="text-zinc-500">수용 인원 정보가 없습니다.</p>
           <p className="text-sm text-zinc-400 mt-2">
             먼저 수용인원 계산을 진행해주세요.
@@ -178,7 +178,7 @@ function MonitorContent() {
         >
           {/* 아이폰 목업 */}
           <div
-            className="w-[360px] h-[720px] rounded-[50px] p-3 shadow-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black"
+            className="w-[90vw] max-w-[360px] h-[80vh] max-h-[720px] rounded-[50px] p-3 shadow-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 노치 */}
@@ -287,7 +287,7 @@ function MonitorContent() {
         </div>
       )}
 
-      <main className="mx-auto max-w-4xl px-6 py-8">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-4 sm:py-8">
         {/* 뒤로가기 */}
         <Link
           href="/"
@@ -297,7 +297,7 @@ function MonitorContent() {
         </Link>
 
         {/* 현재 상태 카드 */}
-        <div className="rounded-lg bg-white p-8 shadow-sm">
+        <div className="rounded-lg bg-white p-4 sm:p-8 shadow-sm">
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-base font-semibold text-zinc-900">
               실시간 혼잡도 모니터링
@@ -310,7 +310,7 @@ function MonitorContent() {
                 ?
               </button>
               {showTooltip && (
-                <div className="absolute left-0 top-7 z-40 w-64 rounded-lg bg-zinc-800 text-white p-4 shadow-lg text-xs">
+                <div className="absolute left-0 sm:left-0 right-0 sm:right-auto top-7 z-40 w-full sm:w-64 rounded-lg bg-zinc-800 text-white p-4 shadow-lg text-xs">
                   <p className="font-bold mb-2">혼잡도 기준 인원</p>
                   <ul className="space-y-1.5">
                     <li className="flex justify-between">
@@ -343,11 +343,11 @@ function MonitorContent() {
           <div className={`rounded-lg p-6 mb-6 ${currentLevelInfo.bgLight} border-2 ${currentLevel >= 3 ? "border-current animate-pulse" : "border-transparent"}`}>
             <div className="text-center">
               <p className={`text-sm ${currentLevelInfo.textColor} mb-1`}>현재 인원</p>
-              <p className={`text-5xl font-bold ${currentLevelInfo.textColor}`}>
+              <p className={`text-3xl sm:text-5xl font-bold ${currentLevelInfo.textColor}`}>
                 {currentCount.toLocaleString()}
-                <span className="text-2xl">명</span>
+                <span className="text-xl sm:text-2xl">명</span>
               </p>
-              <div className={`inline-block mt-3 px-4 py-1 rounded-full ${currentLevelInfo.color} text-white font-medium`}>
+              <div className={`inline-block mt-3 px-4 py-1 rounded-full ${currentLevelInfo.color} text-white font-medium text-sm sm:text-base`}>
                 Level {currentLevel} - {currentLevelInfo.label}
               </div>
             </div>
@@ -384,7 +384,7 @@ function MonitorContent() {
           </div>
 
           {/* 레벨별 기준 인원 */}
-          <div className="grid grid-cols-5 gap-2 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6">
             {levelInfo.map((info) => (
               <div
                 key={info.level}
@@ -400,7 +400,7 @@ function MonitorContent() {
 
           {/* 컨트롤 영역 */}
           <div className="flex flex-col items-center gap-4 border-t border-zinc-100 pt-6">
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex flex-row items-center justify-center gap-2 sm:gap-4 w-full sm:w-auto">
               <Select
                 label=""
                 id="interval"
@@ -423,7 +423,7 @@ function MonitorContent() {
             {/* 카카오톡 알림 미리보기 버튼 */}
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-zinc-800 font-medium rounded-lg shadow-sm transition-colors text-sm"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-zinc-800 font-medium rounded-lg shadow-sm transition-colors text-sm w-full sm:w-auto whitespace-nowrap"
             >
               <span className="text-lg">💬</span>
               <span>{showPreview ? "미리보기 닫기" : "카톡 알림 미리보기"}</span>
@@ -439,7 +439,7 @@ function MonitorContent() {
 
         {/* 히스토리 */}
         {history.length > 0 && (
-          <div className="mt-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="mt-6 rounded-lg bg-white p-4 sm:p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold text-zinc-900">
               인원 변동 히스토리
             </h3>
@@ -447,17 +447,17 @@ function MonitorContent() {
               <table className="w-full text-sm">
                 <thead className="bg-zinc-50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-zinc-700">시간</th>
-                    <th className="px-4 py-2 text-right text-zinc-700">인원</th>
-                    <th className="px-4 py-2 text-center text-zinc-700">상태</th>
+                    <th className="px-2 sm:px-4 py-2 text-left text-zinc-700">시간</th>
+                    <th className="px-2 sm:px-4 py-2 text-right text-zinc-700">인원</th>
+                    <th className="px-2 sm:px-4 py-2 text-center text-zinc-700">상태</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100">
                   {[...history].reverse().map((item, idx) => (
                     <tr key={idx} className="hover:bg-zinc-50">
-                      <td className="px-4 py-2 text-zinc-600">{item.time}</td>
-                      <td className="px-4 py-2 text-right font-bold text-zinc-900">{item.count.toLocaleString()}명</td>
-                      <td className="px-4 py-2 text-center">
+                      <td className="px-2 sm:px-4 py-2 text-zinc-600 text-xs sm:text-sm">{item.time}</td>
+                      <td className="px-2 sm:px-4 py-2 text-right font-bold text-zinc-900 text-xs sm:text-sm">{item.count.toLocaleString()}명</td>
+                      <td className="px-2 sm:px-4 py-2 text-center">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-white ${levelInfo[item.level - 1].color}`}>
                           {levelInfo[item.level - 1].label}
                         </span>
@@ -472,7 +472,7 @@ function MonitorContent() {
 
         {/* 안내 */}
         <div className="mt-6 rounded-lg bg-amber-50 p-4">
-          <p className="text-sm text-amber-700">
+          <p className="text-xs sm:text-sm text-amber-700">
             <strong>안내:</strong> 현재 인원은 시뮬레이션 데이터입니다.
             실제 운영 시에는 입장 게이트 시스템과 연동하여 실시간 데이터를 받아야 합니다.
           </p>
